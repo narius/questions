@@ -1,0 +1,6 @@
+{%extends 'base.html' %}
+{% block content %}
+{% for question in questions%}
+{{question['text']}}: {{question['votes']}}<br>
+{% endfor %}
+{% endblock %}
