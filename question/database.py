@@ -1,3 +1,4 @@
 from sqlalchemy import create_engine
+import os
 
-engine = create_engine("postgresql://postgres:880515@localhost:5432/question_dev")
+engine = create_engine(os.environ['DATABASE_URL'])
