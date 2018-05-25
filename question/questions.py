@@ -15,6 +15,4 @@ def index():
     questions = db.execute(
         'SELECT questions.id, questions.text AS text, count(votes.id) AS votes from questions'
         ' LEFT JOIN votes ON questions.id=votes.question_id  group by questions.id').fetchall()
-    for q in questions:
-        print(type(q))
     return render_template('questions/index.html', questions=questions)

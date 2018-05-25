@@ -9,13 +9,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 toolbar = DebugToolbarExtension(app)
 #db = SQLAlchemy(app)
 
-app.register_blueprint(bp, url_prefix='/q')
+app.register_blueprint(bp, url_prefix='/')
 #from models import User
-
-@app.route('/')
-def hello():
-    print(os.environ['APP_SETTINGS'])
-    return "Hello World!"
 
 if __name__ == '__main__':
     app.run()
