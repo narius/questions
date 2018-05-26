@@ -20,7 +20,11 @@
       {% for question in questions%}
       <tr>
         <td>{{question['text']}}</td>
-        <td>{{question['votes']}}<input type="submit" value="{{question['id']}}" name="vote"></td>
+        <td>{{question['votes']}}
+          {% if g.user %}
+            <input type="submit" value="{{question['id']}}" name="vote">
+          {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </form>
