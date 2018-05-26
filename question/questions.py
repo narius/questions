@@ -8,6 +8,7 @@ from flask import (
     session,
     url_for
 )
+import code
 from werkzeug.exceptions import abort
 from flask_sqlalchemy import SQLAlchemy
 from database import engine
@@ -19,7 +20,7 @@ bp = Blueprint('questions', __name__)
 def get_all_questions():
     db = engine.connect()
     questions = db.execute(
-        'SELECT questions.id, questions.text AS text, count(votes.id) AS votes from questions'
+        'SELECT questions.id as id, questions.text AS text, count(votes.id) AS votes from questions'
         ' LEFT JOIN votes ON questions.id=votes.question_id  group by questions.id order by votes desc').fetchall()
     return questions
 
@@ -45,3 +46,20 @@ def new():
         db.execute("INSERT INTO questions (text, user_id) VALUES('{}','{}')".format(text,session.get('user_id')))
     questions = get_all_questions()
     return render_template('questions/new_question.html', questions=questions)
+
+@bp.route('/details/<int:question_id>', methods=('GET',))
+def details(question_id):
+    db = engine.connect()
+    votes=db.execute("SELECT TO_CHAR(created_date, 'YYYY-MM-dd') as date, count(votes.id) AS votes from votes where votes.question_id='{}' group by votes.created_date order by date"
+    .format(question_id))
+    #["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    labels = ''
+    data = ''
+    for v in votes:
+        labels = labels+'\"'+str(v['date'])+'\",'
+        data = data+str(v['votes'])+','
+    labels = '['+labels[:-1]+']'
+    data = '['+data[:-1]+']'
+    #code.interact(local=locals())
+    print(votes)
+    return render_template('questions/details.html', labels=labels, data=data)

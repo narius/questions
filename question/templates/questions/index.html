@@ -18,7 +18,7 @@
       <form method="post">
       {% for question in questions%}
       <tr>
-        <td>{{question['text']}}</td>
+        <td><a class="nav-link" href="{{url_for('questions.details', question_id=question['id'])}}">{{question['text']}}</a></td>
         <td>{{question['votes']}}
           {% if g.user %}
             <button type="submit" value="{{question['id']}}" name="vote">
