@@ -50,6 +50,14 @@
                   Dashboard <span class="sr-only">(current)</span>
                 </a>
               </li>
+              {% if g.user%}
+                <li class="nav-item">
+                  <a class="nav-link active" href="{{ url_for('questions.new') }}">
+                    <span data-feather="home"></span>
+                    New question <span class="sr-only">(current)</span>
+                  </a>
+                </li>
+              {% endif %}
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
