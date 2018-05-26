@@ -4,6 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 from flask_sqlalchemy import SQLAlchemy
 from database import engine
+from auth import login_required
 #from flaskr.auth import login_required
 
 bp = Blueprint('questions', __name__)
@@ -25,5 +26,11 @@ def vote(question_id):
 def index():
     if request.method == 'POST':
         vote(request.form['vote'])
+    questions = get_all_questions()
+    return render_template('questions/index.html', questions=questions)
+
+@bp.route('/new', methods=('GET', 'POST'))
+@login_required
+def new():
     questions = get_all_questions()
     return render_template('questions/index.html', questions=questions)
