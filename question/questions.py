@@ -20,7 +20,7 @@ def get_all_questions():
     db = engine.connect()
     questions = db.execute(
         'SELECT questions.id, questions.text AS text, count(votes.id) AS votes from questions'
-        ' LEFT JOIN votes ON questions.id=votes.question_id  group by questions.id').fetchall()
+        ' LEFT JOIN votes ON questions.id=votes.question_id  group by questions.id order by votes desc').fetchall()
     return questions
 
 def vote(question_id):
