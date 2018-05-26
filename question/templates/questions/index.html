@@ -16,12 +16,14 @@
       </tr>
     </thead>
     <tbody>
+      <form method="post">
       {% for question in questions%}
       <tr>
         <td>{{question['text']}}</td>
-        <td>{{question['votes']}}</td>
+        <td>{{question['votes']}}<input type="submit" value="{{question['id']}}" name="vote"></td>
       </tr>
       {% endfor %}
+    </form>
     </tbody>
   </table>
 </div>
