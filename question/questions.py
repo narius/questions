@@ -1,5 +1,12 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint,
+    flash,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for
 )
 from werkzeug.exceptions import abort
 from flask_sqlalchemy import SQLAlchemy
@@ -32,5 +39,9 @@ def index():
 @bp.route('/new', methods=('GET', 'POST'))
 @login_required
 def new():
+    if request.method == 'POST':
+        db = engine.connect()
+        text = request.form['question']
+        db.execute("INSERT INTO questions (text, user_id) VALUES('{}','{}')".format(text,session.get('user_id')))
     questions = get_all_questions()
-    return render_template('questions/index.html', questions=questions)
+    return render_template('questions/new_question.html', questions=questions)
