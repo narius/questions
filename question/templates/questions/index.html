@@ -3,7 +3,9 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h1 class="h2">Dashboard</h1>
 </div>
-
+<button type="submit">
+<img src="mybutton.jpg" />
+</button>
 
 <h2>Questions</h2>
 
@@ -22,7 +24,9 @@
         <td>{{question['text']}}</td>
         <td>{{question['votes']}}
           {% if g.user %}
-            <input type="submit" value="{{question['id']}}" name="vote">
+            <button type="submit" value="{{question['id']}}" name="vote">
+              <span data-feather="thumbs-up"></span>
+            </button>
           {% endif %}
         </td>
       </tr>
