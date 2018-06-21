@@ -42,3 +42,7 @@ class Vote(db.Model):
 
     def __repr__(self):
         return '<id {}, question {}'.format(self.id, self.question_id)
+
+class Tag(db.Model):
+    __tablename__ = 'tags'
+    id = db.Column(db.Integer, primary_key=True)

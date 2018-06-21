@@ -13,7 +13,7 @@ from flask import (
 from werkzeug.exceptions import abort
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from database import engine
+from .database import engine
 #from flaskr.auth import login_required
 
 bp = Blueprint('auth', __name__)

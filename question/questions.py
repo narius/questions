@@ -11,8 +11,8 @@ from flask import (
 import code
 from werkzeug.exceptions import abort
 from flask_sqlalchemy import SQLAlchemy
-from database import engine
-from auth import login_required
+from .database import engine
+from .auth import login_required
 #from flaskr.auth import login_required
 
 bp = Blueprint('questions', __name__)
