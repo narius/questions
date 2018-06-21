@@ -52,6 +52,10 @@ def details(question_id):
     db = engine.connect()
     votes=db.execute("SELECT TO_CHAR(created_date, 'YYYY-MM-dd') as date, count(votes.id) AS votes from votes where votes.question_id='{}' group by votes.created_date order by date"
     .format(question_id))
+    question_data=db.execute("SELECT questions.text AS text, count(votes.id) AS votes FROM questions INNER JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
+    row=question_data.fetchone()
+    question=row[0]
+    number_of_votes=row[1]
     #["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     labels = ''
     data = ''
@@ -60,6 +64,11 @@ def details(question_id):
         data = data+str(v['votes'])+','
     labels = '['+labels[:-1]+']'
     data = '['+data[:-1]+']'
+    
     #code.interact(local=locals())
     print(votes)
-    return render_template('questions/details.html', labels=labels, data=data)
+    return render_template('questions/details.html',
+                           labels=labels,
+                           data=data,
+                           number_of_votes=number_of_votes,
+                           question=question)
