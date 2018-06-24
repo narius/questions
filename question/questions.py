@@ -47,6 +47,18 @@ def new_question():
     questions = get_all_questions()
     return render_template('questions/simple_new.html',title="New Question", text="Question", questions=questions)
 
+
+@bp.route('/new_tag', methods=('GET', 'POST'))
+@login_required
+def new_tag():
+    if request.method == 'POST':
+        db = engine.connect()
+        text = request.form['question']
+        db.execute("INSERT INTO tags (text) VALUES('{}')".format(text))
+    questions = get_all_questions()
+    return render_template('questions/simple_new.html',title="New Tag", text="Tag", questions=questions)
+
+
 @bp.route('/details/<int:question_id>', methods=('GET',))
 def details(question_id):
     db = engine.connect()
