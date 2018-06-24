@@ -1,12 +1,12 @@
 {%extends 'base.html' %}
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2">New Question</h1>
+  <h1 class="h2">{{title}}</h1>
 </div>
 
 <div class="table-responsive">
   <form method="post">
-    <label for="question">Question</label>
+    <label for="question">{{text}}</label>
     <input name="question" id="question" required>
     <input type="submit" value="Add">
   </form>

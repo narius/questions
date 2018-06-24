@@ -45,7 +45,7 @@ def new():
         text = request.form['question']
         db.execute("INSERT INTO questions (text, user_id) VALUES('{}','{}')".format(text,session.get('user_id')))
     questions = get_all_questions()
-    return render_template('questions/new_question.html', questions=questions)
+    return render_template('questions/simple_new.html',title="New Question", text="Question", questions=questions)
 
 @bp.route('/details/<int:question_id>', methods=('GET',))
 def details(question_id):
