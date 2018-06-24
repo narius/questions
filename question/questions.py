@@ -37,9 +37,9 @@ def index():
     questions = get_all_questions()
     return render_template('questions/index.html', questions=questions)
 
-@bp.route('/new', methods=('GET', 'POST'))
+@bp.route('/new_question', methods=('GET', 'POST'))
 @login_required
-def new():
+def new_question():
     if request.method == 'POST':
         db = engine.connect()
         text = request.form['question']
