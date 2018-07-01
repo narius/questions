@@ -20,8 +20,12 @@ bp = Blueprint('questions', __name__)
 def get_all_questions():
     db = engine.connect()
     questions = db.execute(
-        'SELECT questions.id as id, questions.text AS text, count(votes.id) AS votes from questions'
-        ' LEFT JOIN votes ON questions.id=votes.question_id  group by questions.id order by votes desc').fetchall()
+        "SELECT questions.id, questions.text AS text, STRING_AGG(DISTINCT tags.text, ',') AS tags_text, count(votes.id) AS votes FROM questions"
+        " INNER JOIN votes ON votes.question_id=questions.id"
+        " LEFT JOIN question_tags on question_tags.question_id=questions.id"
+        " LEFT JOIN tags on tags.id=question_tags.tag_id"
+        " GROUP BY questions.id"
+        " ORDER BY count(votes.id) DESC").fetchall()
     return questions
 
 def vote(question_id):

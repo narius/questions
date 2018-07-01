@@ -11,6 +11,7 @@
     <thead>
       <tr>
         <th>Question</th>
+        <th>Tags</th>
         <th>Votes</th>
       </tr>
     </thead>
@@ -19,6 +20,11 @@
       {% for question in questions%}
       <tr>
         <td><a class="nav-link" href="{{url_for('questions.details', question_id=question['id'])}}">{{question['text']}}</a></td>
+        <td>
+          {% if question['tags_text']!=None %}
+            {{question['tags_text']}}
+          {% endif %}
+        </td>
         <td>{{question['votes']}}
           {% if g.user %}
             <button type="submit" value="{{question['id']}}" name="vote">
