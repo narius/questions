@@ -110,4 +110,10 @@ def tags():
 # Route for tag details
 @bp.route('/details/<string:tag_text>', methods=('GET',))
 def tag_details(tag_text):
-    return render_template('questions/tag_details.html',tag_text=tag_text)
+    db = engine.connect()
+    details = db.execute(
+    "SELECT tags.id AS tag_id, tags.text AS tag_text, questions.id AS question_id, questions.text AS question_text FROM tags"
+    " JOIN question_tags ON question_tags.tag_id=tags.id"
+    " JOIN questions ON questions.id=question_tags.question_id"
+    " WHERE tags.text='{}'".format(tag_text)).fetchall()
+    return render_template('questions/tag_details.html',tag_text=tag_text, details=details)

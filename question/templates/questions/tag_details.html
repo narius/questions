@@ -1,12 +1,25 @@
 {%extends 'base.html' %}
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2">Dashboard</h1>
+  <h1 class="h2">{{tag_text}}</h1>
 </div>
 
 <h2>tag</h2>
 
 <div class="table-responsive">
-  {{tag_text}}
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Question</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in details %}
+                <tr>
+                    <td><a class="nav-link" href="{{url_for('questions.details', question_id=detail['question_id'])}}">{{detail['question_text']}}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
