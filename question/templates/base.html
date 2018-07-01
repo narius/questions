@@ -50,6 +50,12 @@
                   Dashboard <span class="sr-only">(current)</span>
                 </a>
               </li>
+              <li class="nav-item">
+                  <a class="nav-link active" href="{{ url_for('questions.tags') }}">
+                    <span data-feather="home"></span>
+                    Tags <span class="sr-only">(current)</span>
+                  </a>
+                </li>
               {% if g.user%}
                 <li class="nav-item">
                   <a class="nav-link active" href="{{ url_for('questions.new_question') }}">

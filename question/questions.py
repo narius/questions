@@ -95,6 +95,18 @@ def details(question_id):
                            question=question)
 
 
+# Route for tags
+@bp.route('/tags', methods=('GET',))
+def tags():
+    db = engine.connect()
+    tags = db.execute(
+    "SELECT tags.id, tags.text AS text, count(questions.id) AS number_of_questions FROM tags"
+    " LEFT JOIN question_tags ON tags.id=question_tags.tag_id"
+    " LEFT JOIN questions ON question_tags.question_id=questions.id"
+    " GROUP BY tags.id"
+    " ORDER BY tags.text").fetchall()
+    return render_template('questions/tags.html',tags=tags)
+
 # Route for tag details
 @bp.route('/details/<string:tag_text>', methods=('GET',))
 def tag_details(tag_text):
