@@ -26,6 +26,11 @@ def get_all_questions():
         " LEFT JOIN tags on tags.id=question_tags.tag_id"
         " GROUP BY questions.id"
         " ORDER BY count(votes.id) DESC").fetchall()
+    # Creates array from tags
+    for q in questions:
+        d = dict(q.items())
+        if d['tags_text']!=None:
+            d['tags_text']=d['tags_text'].split(',')
     return questions
 
 def vote(question_id):
@@ -88,3 +93,9 @@ def details(question_id):
                            data=data,
                            number_of_votes=number_of_votes,
                            question=question)
+
+
+# Route for tag details
+@bp.route('/details/<string:tag_text>', methods=('GET',))
+def tag_details(tag_text):
+    return render_template('questions/tag_details.html',tag_text=tag_text)
