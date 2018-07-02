@@ -6,7 +6,8 @@ from .auth import bp as bp_auth
 from .questions import bp as bp_questions
 from .config import *
 from flask_debugtoolbar import DebugToolbarExtension
-
+import logging
+from logging.handlers import RotatingFileHandler
 def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_object(os.environ['APP_SETTINGS'])
@@ -17,10 +18,16 @@ def create_app(test_config=None):
     db = SQLAlchemy(app)
     toolbar = DebugToolbarExtension(app)
     #db = SQLAlchemy(app)
-
+    formatter = logging.Formatter(
+        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+    handler = RotatingFileHandler('foo.log', maxBytes=10000000, backupCount=5)
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
     app.register_blueprint(bp_questions, url_prefix='/')
     app.register_blueprint(bp_auth, url_prefix='/auth')
     #from models import User
+    app.log=logging.getLogger('flask.app')
     return app
 #if __name__ == '__main__':
 #    app.run()
