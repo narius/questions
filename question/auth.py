@@ -14,15 +14,20 @@ from werkzeug.exceptions import abort
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from .database import engine
+
+from flask import current_app as app
 #from flaskr.auth import login_required
 
 bp = Blueprint('auth', __name__)
 db = engine.connect()
-
+#app = Flask(__name__)
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     db = engine.connect()
     if request.method == 'POST':
+        registration_key = request.form['key']
+        if (registration_key!=app.config['REGISTRATION_KEY']):
+            return "Wrong key"
         username = request.form['username']
         password = request.form['password']
         error = None

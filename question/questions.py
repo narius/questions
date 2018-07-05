@@ -17,11 +17,13 @@ from .database import engine
 from .auth import login_required
 from flask import current_app
 #from flaskr.auth import login_required
+from flask import current_app as app
+#from flaskr.auth import login_required
 
 bp = Blueprint('questions', __name__)
 
 def get_all_questions():
-    current_app.log.info('Get all questions')
+    app.logger.info('Get all questions')
     db = engine.connect()
     questions = db.execute(
         "SELECT questions.id, questions.text AS text, STRING_AGG(DISTINCT tags.text, ',') AS tags_text, count(votes.id) AS votes FROM questions"

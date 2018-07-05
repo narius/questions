@@ -15,6 +15,8 @@ def create_app(test_config=None):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+    app.config['REGISTRATION_KEY']=os.environ['REGISTRATION_KEY']
+    
     db = SQLAlchemy(app)
     toolbar = DebugToolbarExtension(app)
     #db = SQLAlchemy(app)
