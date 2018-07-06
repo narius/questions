@@ -83,17 +83,24 @@ def details(question_id):
     row=question_data.fetchone()
     question=row[0]
     q_tags=[]
+    all_tags=[]
     unused_tags=[]
     number_of_votes=row[1]
-    question_tags=db.execute("SELECT tags.text AS tag_text, question_tags.id AS q_id FROM tags"
-        " LEFT JOIN question_tags ON question_tags.tag_id=tags.id"
-        " ORDER BY tags.text")
+    question_tags=db.execute("SELECT tags.text AS tag_text, question_tags.question_id AS q_id FROM tags"
+        " JOIN question_tags ON question_tags.tag_id=tags.id"
+        " WHERE question_tags.question_id={}"
+        " ORDER BY tags.text".format(question_id))
+    all_tags_q=db.execute("SELECT tags.text AS tag_text FROM tags")
     for qt in question_tags:
-        if qt['q_id']==question_id:
-            q_tags.append(qt['tag_text'])
-        else:
-            unused_tags.append(qt['tag_text'])
+        q_tags.append(qt['tag_text'])
+    for t in all_tags_q:
+        all_tags.append(t['tag_text'])
+    print("all_tags")
+    print(all_tags)
+    unused_tags=list(set(all_tags)-set(q_tags))
+    print("q_tags")
     print(q_tags)
+    print("u_Tags")
     print(unused_tags)
     #["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     labels = ''

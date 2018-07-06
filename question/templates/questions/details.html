@@ -4,8 +4,7 @@
   <h1 class="h2">Details</h1>
 </div>
 <h1>{{question}} - {{number_of_votes}}</h1>
-<input name='tags' placeholder='write some tags' value={{q_tags|join(', ')}}>
-<!--<input name='tags' placeholder='write some tags' value='foo, bar,buzz,hej'>-->
+<input name='tags' placeholder='write some tags' value='{{q_tags|join(', ')}}'>
 <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
 {% endblock %}
