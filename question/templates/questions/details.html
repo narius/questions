@@ -44,7 +44,6 @@
   <script data-name="basic">
       // vanilla component
       var input = document.querySelector('input[name=tags]'),
-      //tagify = new Tagify( input );
       tagify = new Tagify(input, {
         whitelist : {{unused_tags|safe}},
         dropdown : {
@@ -53,31 +52,22 @@
             maxItems  : 5
         }
     });
-      
-      // with settings passed
-      //tagify = new Tagify( input, {
-      //    duplicates: false,
-      //    whitelist: ['foo', 'bar'],
-      //    callbacks: {
-      //        add : onAddTag // calls an imaginary "onAddTag" function when a tag is added
-      //    }
-      //});
-      
-      // listen to custom tags' events such as 'add' or 'remove' (see full list below).
-      // listeners are chainable
       tagify.on('remove', onTagRemoved);
       tagify.on('add', onTagAdded);
       tagify.on('invalid', onInvaildTag);
       
       function onTagAdded(e){
         console.log(e, e.detail);
-        var search_word ="konfu";
+        var tag = e.detail.value;
+        var q_id={{q_id|safe}};
+        console.log(tag);
         $.ajax({
             type: "POST",
             cache: false,
-            data:{keyword:search_word},
+            data:{q_id: q_id,
+                  tag: tag},
             url: "{{url_for('questions.add_question_tag')}}",
-            contentType: "application/json; charset=utf-8",
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
             dataType: "json",
             success: function(data) { 
               console.log("lyckades med ajax"); 

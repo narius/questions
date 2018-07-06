@@ -57,9 +57,12 @@ def index():
 # Add tags to question
 @bp.route('/add_question_tag', methods=('GET', 'POST'))
 def add_question_tag():
-    print("add_question_tag")
-    print(request.form.keys())
-    return json.dumps({'status':'OK','user':'hej'});
+    db = engine.connect()
+    tag = request.form['tag']
+    q_id = int(request.form['q_id'])
+    query= "INSERT INTO question_tags(question_id, tag_id) VALUES({}, (SELECT tags.id FROM tags WHERE lower(tags.text)='{}'))".format(q_id,tag.lower())
+    status = db.execute(query)
+    return json.dumps({'status':'OK'});
 
 
 @bp.route('/new_question', methods=('GET', 'POST'))
@@ -89,7 +92,9 @@ def details(question_id):
     db = engine.connect()
     votes=db.execute("SELECT TO_CHAR(created_date, 'YYYY-MM-dd') as date, count(votes.id) AS votes from votes where votes.question_id='{}' group by votes.created_date order by date"
     .format(question_id))
-    question_data=db.execute("SELECT questions.text AS text, count(votes.id) AS votes FROM questions INNER JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
+    question_data=db.execute("SELECT questions.text AS text, count(votes.id) AS votes"
+    " FROM questions"
+    " INNER JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
     row=question_data.fetchone()
     question=row[0]
     q_tags=[]
