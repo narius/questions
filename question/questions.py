@@ -105,14 +105,7 @@ def details(question_id):
         q_tags.append(qt['tag_text'])
     for t in all_tags_q:
         all_tags.append(t['tag_text'])
-    print("all_tags")
-    print(all_tags)
-    unused_tags=list(set(all_tags)-set(q_tags))
-    print("q_tags")
-    print(q_tags)
-    print("u_Tags")
-    print(unused_tags)
-    #["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    unused_tags=list(set(all_tags)-set(q_tags))]
     labels = ''
     data = ''
     for v in votes:
@@ -129,6 +122,7 @@ def details(question_id):
                            number_of_votes=number_of_votes,
                            question=question,
                            q_tags=q_tags,
+                           q_id=question_id,
                            unused_tags=unused_tags)
 
 
