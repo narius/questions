@@ -7,7 +7,8 @@ from flask import (
     render_template,
     request,
     session,
-    url_for
+    url_for,
+    json
 )
 import logging
 import code
@@ -51,6 +52,15 @@ def index():
         vote(request.form['vote'])
     questions = get_all_questions()
     return render_template('questions/index.html', questions=questions)
+
+
+# Add tags to question
+@bp.route('/add_question_tag', methods=('GET', 'POST'))
+def add_question_tag():
+    print("add_question_tag")
+    print(request.form.keys())
+    return json.dumps({'status':'OK','user':'hej'});
+
 
 @bp.route('/new_question', methods=('GET', 'POST'))
 @login_required
