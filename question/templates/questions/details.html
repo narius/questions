@@ -4,6 +4,8 @@
   <h1 class="h2">Details</h1>
 </div>
 <h1>{{question}} - {{number_of_votes}}</h1>
+<input name='tags' placeholder='write some tags' value={{q_tags|join(', ')}}>
+<!--<input name='tags' placeholder='write some tags' value='foo, bar,buzz,hej'>-->
 <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
 {% endblock %}
@@ -40,4 +42,51 @@
         }
       });
     </script>
+  <script data-name="basic">
+      // vanilla component
+      var input = document.querySelector('input[name=tags]'),
+      //tagify = new Tagify( input );
+      tagify = new Tagify(input, {
+        whitelist : {{unused_tags|safe}},
+        dropdown : {
+            classname : "color-blue",
+            enabled   : 2,
+            maxItems  : 5
+        }
+    });
+      
+      // with settings passed
+      //tagify = new Tagify( input, {
+      //    duplicates: false,
+      //    whitelist: ['foo', 'bar'],
+      //    callbacks: {
+      //        add : onAddTag // calls an imaginary "onAddTag" function when a tag is added
+      //    }
+      //});
+      
+      // listen to custom tags' events such as 'add' or 'remove' (see full list below).
+      // listeners are chainable
+      tagify.on('remove', onTagRemoved);
+      tagify.on('add', onTagAdded);
+      tagify.on('invalid', onInvaildTag);
+      
+      function onAddTag(e){
+        console.log(e, e.detail);
+      }
+      
+      function onTagRemoved(e){
+          console.log(e, e.detail);
+          // remove listener after first tag removal
+          tagify.off('remove', onTagRemoved);
+      }
+      
+      function onTagAdded(e){
+        console.log(e, e.detail);
+          // do whatever
+      }
+      
+      function onInvaildTag(e){
+          // e.detail ...
+      }
+      </script>
 {% endblock %}
