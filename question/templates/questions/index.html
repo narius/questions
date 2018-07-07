@@ -19,7 +19,10 @@
       <form method="post">
       {% for question in questions%}
       <tr>
-        <td><a class="nav-link" href="{{url_for('questions.details', question_id=question['id'])}}">{{question['text']}}</a></td>
+        <td>
+          <a class="nav-link" href="{{url_for('questions.details', question_id=question['id'])}}">{{question['text']}}</a>
+          
+        </td>
         <td>
           {% if question['tags_text']!=None %}
             {% for tag in question['tags_text'].split(",") %}
@@ -40,4 +43,6 @@
     </tbody>
   </table>
 </div>
+{% endblock %}
+{% block extra_scripts %}
 {% endblock %}

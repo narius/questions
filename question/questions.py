@@ -7,7 +7,8 @@ from flask import (
     render_template,
     request,
     session,
-    url_for
+    url_for,
+    json
 )
 import logging
 import code
@@ -26,7 +27,7 @@ def get_all_questions():
     app.logger.info('Get all questions')
     db = engine.connect()
     questions = db.execute(
-        "SELECT questions.id, questions.text AS text, STRING_AGG(DISTINCT tags.text, ',') AS tags_text, count(votes.id) AS votes FROM questions"
+        "SELECT questions.id, questions.text AS text, STRING_AGG(DISTINCT tags.text, ',') AS tags_text, count(DISTINCT votes.id) AS votes FROM questions"
         " INNER JOIN votes ON votes.question_id=questions.id"
         " LEFT JOIN question_tags on question_tags.question_id=questions.id"
         " LEFT JOIN tags on tags.id=question_tags.tag_id"
@@ -51,6 +52,27 @@ def index():
         vote(request.form['vote'])
     questions = get_all_questions()
     return render_template('questions/index.html', questions=questions)
+
+
+# Add tags to question
+@bp.route('/add_question_tag', methods=('POST',))
+def add_question_tag():
+    db = engine.connect()
+    tag = request.form['tag']
+    q_id = int(request.form['q_id'])
+    query= "INSERT INTO question_tags(question_id, tag_id) VALUES({}, (SELECT tags.id FROM tags WHERE lower(tags.text)='{}'))".format(q_id,tag.lower())
+    status = db.execute(query)
+    return json.dumps({'status':'OK'});
+
+
+@bp.route('/remove_question_tag', methods=('POST',))
+def remove_question_tag():
+    db = engine.connect()
+    tag = request.form['tag']
+    q_id = int(request.form['q_id'])
+    query= "DELETE FROM question_tags WHERE question_id={} AND tag_id=(SELECT tags.id FROM tags WHERE lower(tags.text)='{}')".format(q_id,tag.lower())
+    status = db.execute(query)
+    return json.dumps({'status':'OK'});
 
 @bp.route('/new_question', methods=('GET', 'POST'))
 @login_required
@@ -79,11 +101,25 @@ def details(question_id):
     db = engine.connect()
     votes=db.execute("SELECT TO_CHAR(created_date, 'YYYY-MM-dd') as date, count(votes.id) AS votes from votes where votes.question_id='{}' group by votes.created_date order by date"
     .format(question_id))
-    question_data=db.execute("SELECT questions.text AS text, count(votes.id) AS votes FROM questions INNER JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
+    question_data=db.execute("SELECT questions.text AS text, count(votes.id) AS votes"
+    " FROM questions"
+    " INNER JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
     row=question_data.fetchone()
     question=row[0]
+    q_tags=[]
+    all_tags=[]
+    unused_tags=[]
     number_of_votes=row[1]
-    #["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    question_tags=db.execute("SELECT tags.text AS tag_text, question_tags.question_id AS q_id FROM tags"
+        " JOIN question_tags ON question_tags.tag_id=tags.id"
+        " WHERE question_tags.question_id={}"
+        " ORDER BY tags.text".format(question_id))
+    all_tags_q=db.execute("SELECT tags.text AS tag_text FROM tags")
+    for qt in question_tags:
+        q_tags.append(qt['tag_text'])
+    for t in all_tags_q:
+        all_tags.append(t['tag_text'])
+    unused_tags=list(set(all_tags)-set(q_tags))
     labels = ''
     data = ''
     for v in votes:
@@ -98,7 +134,10 @@ def details(question_id):
                            labels=labels,
                            data=data,
                            number_of_votes=number_of_votes,
-                           question=question)
+                           question=question,
+                           q_tags=q_tags,
+                           q_id=question_id,
+                           unused_tags=unused_tags)
 
 
 # Route for tags

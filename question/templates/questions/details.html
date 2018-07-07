@@ -4,6 +4,7 @@
   <h1 class="h2">Details</h1>
 </div>
 <h1>{{question}} - {{number_of_votes}}</h1>
+<input name='tags' placeholder='write some tags' value='{{q_tags|join(', ')}}'>
 <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
 {% endblock %}
@@ -40,4 +41,75 @@
         }
       });
     </script>
+  <script data-name="basic">
+      // vanilla component
+      var input = document.querySelector('input[name=tags]'),
+      tagify = new Tagify(input, {
+        whitelist : {{unused_tags|safe}},
+        dropdown : {
+            classname : "color-blue",
+            enabled   : 2,
+            maxItems  : 5
+        }
+    });
+      tagify.on('remove', onTagRemoved);
+      tagify.on('add', onTagAdded);
+      tagify.on('invalid', onInvaildTag);
+      
+      function onTagAdded(e){
+        console.log(e, e.detail);
+        var tag = e.detail.value;
+        var q_id={{q_id|safe}};
+        console.log(tag);
+        $.ajax({
+            type: "POST",
+            cache: false,
+            data:{q_id: q_id,
+                  tag: tag},
+            url: "{{url_for('questions.add_question_tag')}}",
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType: "json",
+            success: function(data) { 
+              console.log("lyckades med ajax"); 
+              console.log(data);                    
+            },
+            error: function(jqXHR) {
+                alert("error: " + jqXHR.status);
+                console.log("misslyckades med ajax");
+                console.log(jqXHR);
+            }
+        });
+      }
+      
+      function onTagRemoved(e){
+          console.log(e, e.detail);
+          var tag = e.detail.value;
+          var q_id={{q_id|safe}};
+          console.log(tag);
+          $.ajax({
+            type: "POST",
+            cache: false,
+            data:{q_id: q_id,
+                  tag: tag},
+            url: "{{url_for('questions.remove_question_tag')}}",
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType: "json",
+            success: function(data) { 
+              console.log("lyckades med ajax"); 
+              console.log(data);                    
+            },
+            error: function(jqXHR) {
+                alert("error: " + jqXHR.status);
+                console.log("misslyckades med ajax");
+                console.log(jqXHR);
+            }
+          });
+          // remove listener after first tag removal
+          tagify.off('remove', onTagRemoved);
+      }
+      
+      function onInvaildTag(e){
+          // e.detail ...
+      }
+      </script>
 {% endblock %}
