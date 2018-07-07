@@ -83,6 +83,27 @@
       
       function onTagRemoved(e){
           console.log(e, e.detail);
+          var tag = e.detail.value;
+          var q_id={{q_id|safe}};
+          console.log(tag);
+          $.ajax({
+            type: "POST",
+            cache: false,
+            data:{q_id: q_id,
+                  tag: tag},
+            url: "{{url_for('questions.remove_question_tag')}}",
+            contentType:"application/x-www-form-urlencoded; charset=utf-8",
+            dataType: "json",
+            success: function(data) { 
+              console.log("lyckades med ajax"); 
+              console.log(data);                    
+            },
+            error: function(jqXHR) {
+                alert("error: " + jqXHR.status);
+                console.log("misslyckades med ajax");
+                console.log(jqXHR);
+            }
+          });
           // remove listener after first tag removal
           tagify.off('remove', onTagRemoved);
       }

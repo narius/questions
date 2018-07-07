@@ -55,7 +55,7 @@ def index():
 
 
 # Add tags to question
-@bp.route('/add_question_tag', methods=('GET', 'POST'))
+@bp.route('/add_question_tag', methods=('POST',))
 def add_question_tag():
     db = engine.connect()
     tag = request.form['tag']
@@ -64,6 +64,15 @@ def add_question_tag():
     status = db.execute(query)
     return json.dumps({'status':'OK'});
 
+
+@bp.route('/remove_question_tag', methods=('POST',))
+def remove_question_tag():
+    db = engine.connect()
+    tag = request.form['tag']
+    q_id = int(request.form['q_id'])
+    query= "DELETE FROM question_tags WHERE question_id={} AND tag_id=(SELECT tags.id FROM tags WHERE lower(tags.text)='{}')".format(q_id,tag.lower())
+    status = db.execute(query)
+    return json.dumps({'status':'OK'});
 
 @bp.route('/new_question', methods=('GET', 'POST'))
 @login_required
@@ -110,7 +119,7 @@ def details(question_id):
         q_tags.append(qt['tag_text'])
     for t in all_tags_q:
         all_tags.append(t['tag_text'])
-    unused_tags=list(set(all_tags)-set(q_tags))]
+    unused_tags=list(set(all_tags)-set(q_tags))
     labels = ''
     data = ''
     for v in votes:
