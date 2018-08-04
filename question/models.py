@@ -2,6 +2,12 @@ from app import db
 from sqlalchemy.dialects.postgresql import JSON
 from datetime import datetime
 
+
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('question_id', db.Integer, db.ForeignKey('question.id'), primary_key=True)
+)
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -21,9 +27,10 @@ class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String())
-    # addresses = db.relationship('Address', backref='person', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     votes = db.relationship('Vote', backref='question', lazy=True)
+    tags = db.relationship('Tag', secondary=tags, lazy='subquery',
+        backref=db.backref('questions', lazy=True))
     def __init__(self, text):
         self.text = text
 
@@ -46,3 +53,9 @@ class Vote(db.Model):
 class Tag(db.Model):
     __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String())
+    def __init__(self,text):
+        self.text=text
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)

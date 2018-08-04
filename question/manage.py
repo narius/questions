@@ -1,17 +1,5 @@
-import os
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
-
-from app import app, db
-
-
-app.config.from_object(os.environ['APP_SETTINGS'])
-
-migrate = Migrate(app, db)
-manager = Manager(app)
-
-manager.add_command('db', MigrateCommand)
-
+#!/usr/bin/env python
+from migrate.versioning.shell import main
 
 if __name__ == '__main__':
-    manager.run()
+    main(repository='migrare_questions', url='postgresql://postgres:880515@localhost:5432/question_dev', debug='False')
