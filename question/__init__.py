@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy.sql import select, func
 from .auth import bp as bp_auth
 from .questions import bp as bp_questions
 from .config import *
@@ -45,7 +45,10 @@ def create_app(test_config=None):
 #    app.run()
 
 
-
+question_tags = db.Table('question_tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
+    db.Column('question_id', db.Integer, db.ForeignKey('questions.id'), primary_key=True)
+)
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -80,7 +83,7 @@ class Vote(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     created_date = db.Column(db.DateTime, nullable=False,
-        default=datetime.utcnow)
+        server_default=db.func.now())
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
     def __init__(self):
         pass
@@ -101,7 +104,3 @@ class Tag(db.Model):
         return '<id {}>'.format(self.id)
 
 
-question_tags = db.Table('question_tags',
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
-    db.Column('question_id', db.Integer, db.ForeignKey('question.id'), primary_key=True)
-)
