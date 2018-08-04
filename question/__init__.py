@@ -41,8 +41,8 @@ def create_app(test_config=None):
     #from models import User
     app.log=logging.getLogger('flask.app')
     return app
-#if __name__ == '__main__':
-#    app.run()
+if __name__ == '__main__':
+    app.run()
 
 
 question_tags = db.Table('question_tags',
