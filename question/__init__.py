@@ -13,10 +13,10 @@ from logging.handlers import RotatingFileHandler
 
 db = SQLAlchemy()
 
-def create_app():
-    app = Flask(__name__)
-    
-    return app
+#def create_app():
+#    app = Flask(__name__)
+#    
+#    return app
 def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_object(os.environ['APP_SETTINGS'])
