@@ -19,6 +19,7 @@ from .auth import login_required
 from flask import current_app
 #from flaskr.auth import login_required
 from flask import current_app as app
+from datetime import datetime
 #from flaskr.auth import login_required
 
 bp = Blueprint('questions', __name__)
@@ -28,7 +29,7 @@ def get_all_questions():
     db = engine.connect()
     questions = db.execute(
         "SELECT questions.id, questions.text AS text, STRING_AGG(DISTINCT tags.text, ',') AS tags_text, count(DISTINCT votes.id) AS votes FROM questions"
-        " INNER JOIN votes ON votes.question_id=questions.id"
+        " LEFT JOIN votes ON votes.question_id=questions.id"
         " LEFT JOIN question_tags on question_tags.question_id=questions.id"
         " LEFT JOIN tags on tags.id=question_tags.tag_id"
         " GROUP BY questions.id"
@@ -103,7 +104,7 @@ def details(question_id):
     .format(question_id))
     question_data=db.execute("SELECT questions.text AS text, count(votes.id) AS votes"
     " FROM questions"
-    " INNER JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
+    " LEFT JOIN votes on question_id=questions.id  where questions.id='{}' GROUP BY questions.text".format(question_id))
     row=question_data.fetchone()
     question=row[0]
     q_tags=[]
