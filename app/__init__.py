@@ -10,7 +10,7 @@ import logging
 from flask_migrate import Migrate
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
-
+#app = Flask(__name__)
 db = SQLAlchemy()
 
 #def create_app():
