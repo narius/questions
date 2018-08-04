@@ -1,0 +1,6 @@
+
+python migrare_questions/manage.py version_control postgresql://postgres:880515@localhost:5432/question_dev migrare_questions
+ python migrare_questions/manage.py version migrare_questions
+
+ migrate manage manage.py --repository=migrare_questions --url=postgresql://postgres:880515@localhost:5432/question_dev
+$ python manage.py db_version
